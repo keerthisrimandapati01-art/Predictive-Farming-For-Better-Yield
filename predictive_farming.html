@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Predictive Farming System</title>
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .overlay {
+            background: rgba(0, 0, 0, 0.7);
+            min-height: 100vh;
+            color: white;
+        }
+
+        nav {
+            background: #2e7d32;
+            padding: 10px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        nav button {
+            background: #43a047;
+            border: none;
+            padding: 8px 15px;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 5px;
+        }
+
+        nav button:hover {
+            background: #1b5e20;
+        }
+
+        .section {
+            display: none;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .active {
+            display: block;
+        }
+
+        input, select {
+            padding: 8px;
+            margin: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .box {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        h1, h2 {
+            color: #a5d6a7;
+        }
+
+    </style>
+</head>
+
+<body>
+<div class="overlay">
+
+    <!-- Navigation -->
+    <nav>
+        <button onclick="showSection('home')">Home</button>
+        <button onclick="showSection('weather')">Weather</button>
+        <button onclick="showSection('prediction')">Crop Prediction</button>
+        <button onclick="showSection('irrigation')">Irrigation</button>
+        <button onclick="showSection('harvest')">Harvest</button>
+        <button onclick="showSection('about')">About</button>
+        <button onclick="showSection('contact')">Contact</button>
+        <button onclick="setLanguage('en')">English</button>
+        <button onclick="setLanguage('hi')">हिन्दी</button>
+        <button onclick="setLanguage('te')">తెలుగు</button>
+    </nav>
+
+    <!-- HOME -->
+    <div id="home" class="section active">
+        <h1 id="title">Predictive Farming for Better Yields</h1>
+        <p id="desc">Smart farming decisions using agricultural data.</p>
+    </div>
+
+    <!-- WEATHER -->
+    <div id="weather" class="section">
+        <h2>Weather Input</h2>
+        <div class="box">
+            Temperature (°C): <input type="number" id="temp"><br>
+            Rainfall (mm): <input type="number" id="rain"><br>
+        </div>
+    </div>
+
+    <!-- CROP PREDICTION -->
+    <div id="prediction" class="section">
+        <h2>Crop Prediction</h2>
+        <div class="box">
+            Soil Type:
+            <select id="soil">
+                <option value="loamy">Loamy</option>
+                <option value="clay">Clay</option>
+                <option value="sandy">Sandy</option>
+            </select>
+            <br>
+            <button onclick="predictCrop()">Predict Crop</button>
+            <h3 id="result"></h3>
+        </div>
+    </div>
+
+    <!-- IRRIGATION -->
+    <div id="irrigation" class="section">
+        <h2>Irrigation Suggestion</h2>
+        <div class="box">
+            <button onclick="irrigationAdvice()">Get Advice</button>
+            <h3 id="irrigationResult"></h3>
+        </div>
+    </div>
+
+    <!-- HARVEST -->
+    <div id="harvest" class="section">
+        <h2>Harvest Planning</h2>
+        <div class="box">
+            <button onclick="harvestAdvice()">Harvest Guidance</button>
+            <h3 id="harvestResult"></h3>
+        </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div id="about" class="section">
+        <h2>About Project</h2>
+        <p>
+            This system uses soil, weather and crop data to provide predictions,
+            irrigation planning and harvest suggestions to improve yield.
+        </p>
+    </div>
+
+    <!-- CONTACT -->
+    <div id="contact" class="section">
+        <h2>Contact</h2>
+        <p>Email: support@predictivefarming.com</p>
+        <p>Phone: +91 9876543210</p>
+    </div>
+
+</div>
+
+<script>
+
+    // SECTION SWITCHING
+    function showSection(id) {
+        let sections = document.getElementsByClassName("section");
+        for (let i = 0; i < sections.length; i++) {
+            sections[i].classList.remove("active");
+        }
+        document.getElementById(id).classList.add("active");
+    }
+
+    // LANGUAGE DATA STRUCTURE (OBJECT)
+    const translations = {
+        en: {
+            title: "Predictive Farming for Better Yields",
+            desc: "Smart farming decisions using agricultural data."
+        },
+        hi: {
+            title: "बेहतर उपज के लिए पूर्वानुमान खेती",
+            desc: "डेटा आधारित स्मार्ट खेती निर्णय।"
+        },
+        te: {
+            title: "మెరుగైన దిగుబడికి ప్రిడిక్టివ్ ఫార్మింగ్",
+            desc: "డేటా ఆధారిత స్మార్ట్ వ్యవసాయం."
+        }
+    };
+
+    function setLanguage(lang) {
+        document.getElementById("title").innerText = translations[lang].title;
+        document.getElementById("desc").innerText = translations[lang].desc;
+    }
+
+    // CROP DATABASE (ARRAY OF OBJECTS)
+    const crops = [
+        { soil: "loamy", temp: 20, rain: 100, crop: "Rice" },
+        { soil: "clay", temp: 18, rain: 80, crop: "Wheat" },
+        { soil: "sandy", temp: 25, rain: 50, crop: "Millet" }
+    ];
+
+    function predictCrop() {
+        let soil = document.getElementById("soil").value;
+        let temp = document.getElementById("temp").value;
+        let rain = document.getElementById("rain").value;
+
+        for (let i = 0; i < crops.length; i++) {
+            if (soil === crops[i].soil &&
+                temp >= crops[i].temp &&
+                rain >= crops[i].rain) {
+                document.getElementById("result").innerText =
+                    "Recommended Crop: " + crops[i].crop;
+                return;
+            }
+        }
+        document.getElementById("result").innerText =
+            "No suitable crop found.";
+    }
+
+    function irrigationAdvice() {
+        let rain = document.getElementById("rain").value;
+        if (rain < 60) {
+            document.getElementById("irrigationResult").innerText =
+                "High irrigation required.";
+        } else {
+            document.getElementById("irrigationResult").innerText =
+                "Normal irrigation sufficient.";
+        }
+    }
+
+    function harvestAdvice() {
+        let temp = document.getElementById("temp").value;
+        if (temp > 30) {
+            document.getElementById("harvestResult").innerText =
+                "Harvest early to avoid heat damage.";
+        } else {
+            document.getElementById("harvestResult").innerText =
+                "Harvest at standard maturity time.";
+        }
+    }
+
+</script>
+
+</body>
+</html>
